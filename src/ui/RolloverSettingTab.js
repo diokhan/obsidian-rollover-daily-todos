@@ -67,6 +67,20 @@ export default class RolloverSettingTab extends PluginSettingTab {
       );
 
     new Setting(this.containerEl)
+      .setName("Migrate todos from previous day")
+      .setDesc(
+        `Once todos are found, they are added to Today's Daily Note. If successful, they are marked as Migrated from Yesterday's Daily note.`
+      )
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.migrateOnComplete || false)
+          .onChange((value) => {
+            this.plugin.settings.migrateOnComplete = value;
+            this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(this.containerEl)
       .setName("Remove empty todos in rollover")
       .setDesc(
         `If you have empty todos, they will not be rolled over to the next day.`

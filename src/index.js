@@ -43,6 +43,7 @@ export default class RolloverTodosPlugin extends Plugin {
     const DEFAULT_SETTINGS = {
       templateHeading: "none",
       deleteOnComplete: false,
+      migrateOnComplete: false,
       removeEmptyTodos: false,
       rolloverChildren: false,
       rolloverOnFileCreate: true,
@@ -298,6 +299,26 @@ export default class RolloverTodosPlugin extends Plugin {
         }
 
         const modifiedContent = lines.join("\n");
+        await this.app.vault.modify(lastDailyNote, modifiedContent);
+      }
+
+      if (migrateOnComplete) {
+        const lastDailyNoteContent = await this.app.vault.read(lastDailyNote);
+        undoHistoryInstance.previousDay = {
+          file: lastDailyNote,
+          oldContent: `${lastDailyNoteContent}`,
+        };
+        const lines = lastDailyNoteContent.split("\n");
+
+        const modifiedLines = lines.map((line) => {
+          if (todos_yesterday.includes(line)) {
+            return line.replace('- [ ]', '- [>]');
+          }
+
+          return line;
+        });
+
+        const modifiedContent = modifiedLines.join("\n");
         await this.app.vault.modify(lastDailyNote, modifiedContent);
       }
 
