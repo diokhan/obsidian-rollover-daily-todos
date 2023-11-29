@@ -196,7 +196,7 @@ export default class RolloverTodosPlugin extends Plugin {
         10000
       );
     } else {
-      const { templateHeading, deleteOnComplete, removeEmptyTodos } =
+      const { templateHeading, deleteOnComplete, migrateOnComplete, removeEmptyTodos } =
         this.settings;
 
       // check if there is a daily note from yesterday
